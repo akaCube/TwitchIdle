@@ -21,6 +21,11 @@
       <h2>Cursors: {{ cursors }}</h2>
       <button @click="buyCursor">Buy Cursor! ({{ cCostDisplay}})</button>
       <h2>Seconds: {{ seconds }}</h2>
+
+      <div style="margin-top: 100px;">
+        <h1>Changelog:</h1>
+        {{{ changeLog }}}
+      /div>
     </div>
 
 
@@ -29,10 +34,7 @@
 
 
 
-    <div style="margin-top: 100px;">
-      <h1>Changelog:</h1>
-      {{ changeLog }}
-    </div>
+
 
     <script src ="js/game.js"></script>
     
