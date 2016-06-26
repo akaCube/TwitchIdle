@@ -20,6 +20,10 @@ Game.Load = function(){
 
   // Buildings //
 
+  Game.viewers=0;
+  Game.viewerCost=10;
+  Game.viewerDisplayCost=10;
+
   // Updates //
 
   // Actions //
@@ -35,25 +39,19 @@ Game.Load();
 var vm = new Vue({
   el: '#game',
   data: {
-    clicks: 0,
-    cursors: 0,
-    cCostDisplay: 10,
-    seconds: 0,
-    changeLog: Game.changeLog
+    Game: Game
   },
   methods:{
     cycle: function(){
-      this.seconds++;
-      this.clicks = this.clicks + this.cursors;
+      this.Game.money+=this.Game.viewers*0.01;
     },
     buyCursor: function(){
-      
-      var cursorCost = Math.floor(10 * Math.pow(1.1,this.cursors));
-      if(this.clicks >= cursorCost){
-        this.cursors++;
-        this.clicks = this.clicks - cursorCost;
+      var viewerCost = Math.floor(10 * Math.pow(1.1,this.Game.viewers));
+      if(this.Game.money >= viewerCost){
+        this.Game.viewers++;
+        this.Game.money-=viewerCost;
       }
-      this.cCostDisplay = Math.floor(10 * Math.pow(1.1,this.cursors));
+      this.Game.viewerDisplayCost = Math.floor(10 * Math.pow(1.1,this.Game.viewers));
     }
   }
 });

@@ -16,15 +16,14 @@
     <h1>Welcome to TwitchIdle 0.0.2 Alpha!</h1>
 
     <div id="game">
-      <h1>Your clicks: {{ clicks }}</h1>
-      <button @click="clicks++">Click!</button>
-      <h2>Cursors: {{ cursors }}</h2>
-      <button @click="buyCursor">Buy Cursor! ({{ cCostDisplay}})</button>
-      <h2>Seconds: {{ seconds }}</h2>
+      <h1>Your clicks: {{ Game.money }}</h1>
+      <button @click="Game.money++">Click!</button>
+      <h2>Cursors: {{ Game.viewers }}</h2>
+      <button @click="buyCursor">Buy Cursor! ({{ Game.viewerDisplayCost}})</button>
 
       <div style="margin-top: 100px;">
         <h1>Changelog:</h1>
-        {{{ changeLog }}}
+        {{{ Game.changeLog }}}
       </div>
     </div>
 
