@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TwitchIdle 0.0.2 Alpha</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link src="js/vue.min.js">
+
+  </head>
+  <body>
+    <script src="js/vue.js"></script>
+
+    <h1>Welcome to TwitchIdle 0.0.2 Alpha!</h1>
+
+
+
+    <div id="app">
+      <h1>Your clicks: {{ clicks }}</h1>
+      <button @click="clicks++">Click!</button>
+      <h2>Cursors: {{ cursors }}</h2>
+      <button @click="buyCursor">Buy Cursor! ({{ cCostDisplay}})</button>
+      <h2>Seconds: {{ seconds }}</h2>
+    </div>
+
+    <div style="margin-top: 100px;">
+      <h1>Changelog:</h1>
+      <p>
+        <h2>0.0.2 Alpha</h2><br>
+        First "building" is added! Get the gathering going!<br>
+        Game Loop is in place<br>
+        Seconds Counter added
+      </p>
+      <p>
+        <h2>0.0.1 Alpha</h2><br>
+        Yay! Game is launched! Only local development tho... :(<br>
+        Main currency added
+      </p>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#app',
+        data: {
+          clicks: 0,
+          cursors: 0,
+          cCostDisplay: 10,
+          seconds: 0 
+        },
+        methods:{
+          cycle: function(){
+            this.seconds++;
+            this.clicks = this.clicks + this.cursors;
+          },
+          buyCursor: function(){
+            
+            var cursorCost = Math.floor(10 * Math.pow(1.1,this.cursors));
+            if(this.clicks >= cursorCost){
+              this.cursors++;
+              this.clicks = this.clicks - cursorCost;
+            }
+            this.cCostDisplay = Math.floor(10 * Math.pow(1.1,this.cursors));
+          }
+        }
+      });
+      window.setInterval(function(){
+        vm.cycle();
+      }, 1000);
+    </script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    
+  </body>
+</html>
