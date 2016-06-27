@@ -75,7 +75,7 @@ Game.Load = function(){
   }
 
   Game.calcViewer = function(){
-  var viewer = followers * viewersRatio;
+  var viewer = Game.followers * Game.viewersRatio;
   var deviation = 0.9 + Math.random() / 5;
   viewer *= deviation;
   viewer++;
