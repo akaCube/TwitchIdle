@@ -22,11 +22,14 @@ Game.Load = function(){
 
   // Variables //
 
-  Game.money = 0;
-  Game.emotes = 0;
-  Game.followers = 0;
-  Game.viewersRatio = 0.05;
-  Game.viewers = 1;
+    // Currencies //
+
+    Game.money = 0;
+    Game.emotes = 0;
+    Game.followers = 0;
+    Game.viewersRatio = 0.05;
+    Game.viewers = 1;
+
   // Buildings //
 
   Game.Buildings=[];
@@ -55,30 +58,33 @@ Game.Load = function(){
   new Game.Building(0, 'Spambot', 'This bot will just spam your chat. What did you expect?',1,0);
   new Game.Building(1, 'Moderator', 'Moderated chat is a blessing for every streamer, but too much cannot be good.',0,10);
 
+  
+
   // Updates //
 
   // Actions //
 
   // Functions //
 
-  Game.ClickMoney = function(){
-    Game.AddMoney(0.01);
-  };
-  Game.ClickEmote = function(){
-    Game.AddEmote(1);
-  };
-  Game.AddMoney = function(amount){
-    Game.money = l(Game.money + amount, 2);
-  }
-  Game.AddEmote = function(amount){
-    Game.emotes += amount
-  }
-  Game.CalcViewers = function(){
-    var viewers = Game.followers * Game.viewersRatio;
-    var deviation = 0.9 + Math.random() / 5;
-    Game.viewers = Math.round(viewers * deviation + 1);
-  }
+    // Currency Calculations //
 
+    Game.ClickMoney = function(){
+      Game.AddMoney(0.01);
+    };
+    Game.ClickEmote = function(){
+      Game.AddEmote(1);
+    };
+    Game.AddMoney = function(amount){
+      Game.money = l(Game.money + amount, 2);
+    }
+    Game.AddEmote = function(amount){
+      Game.emotes += amount
+    }
+    Game.CalcViewers = function(){
+      var viewers = Game.followers * Game.viewersRatio;
+      var deviation = 0.9 + Math.random() / 5;
+      Game.viewers = Math.round(viewers * deviation + 1);
+    }
 }
 
 Game.Load();
