@@ -20,18 +20,35 @@ Game.Load = function(){
 
   // Buildings //
 
-  Game.viewers=0;
-  Game.viewerCost=1;
-  Game.viewerDisplayCost=1;
+  Game.Buildings=[];
+
+  Game.Building=function(id, name, description, baseMoneyPrice, baseEmotePrice, count=0){
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.baseMoneyPrice = baseMoneyPrice;
+    this.baseEmotePrice = baseEmotePrice;
+    this.moneyCost = baseMoneyPrice;
+    this.emoteCost = baseEmotePrice;
+    this.count = count;
+    this.Buy = function(){
+      if(Game.money >= this.moneyCost && Game.emotes >= this.emoteCost){
+        this.count++;
+        Game.money -= this.moneyCost;
+        Game.emotes -= this.emoteCost;
+        this.moneyCost = Math.floor(this.baseMoneyPrice * Math.pow(1.1,this.count));
+        this.emoteCost = Math.floor(this.baseEmotePrice * Math.pow(1.1,this.count));
+      }
+    };
+    Game.Buildings[this.id]=this;
+  };
+
+  new Game.Building('Spambot','This bot will just spam you chat. What did you think?',1,0)
+  new Game.Building('Moderator','Moderated chat is a Bless for every streamer, but too much can not be good',0,10)
 
   // Updates //
 
   // Actions //
-
-  Game.Actions = [
-  	{tag: 'redditPost', name: 'Reddit Post', initialCost: 10, timesUsed: 0},
-  	{tag: 'keyGiveaway', name: 'Key Giveaway', initialCost: 20, timesUsed: 0}
-  ];
 
 }
 
