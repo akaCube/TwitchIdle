@@ -74,7 +74,7 @@ Game.Load = function(){
     Game.emotes += amount
   }
 
-  Game.calcViewer = function(){
+  Game.CalcViewer = function(){
   var viewer = Game.followers * Game.viewersRatio;
   var deviation = 0.9 + Math.random() / 5;
   viewer *= deviation;
