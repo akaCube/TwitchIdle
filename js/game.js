@@ -82,7 +82,7 @@ var vm = new Vue({
       this.addEmotes(1);
     },
     addMoney: function(amount){
-      Game.money += amount;
+      Game.money = Math.round((Game.money + amount) * 100) / 100;
     },
     addEmotes: function(amount){
       Game.emotes += amount;
