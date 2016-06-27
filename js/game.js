@@ -1,3 +1,11 @@
+////////////////////
+// HELP FUNCTIONS //
+////////////////////
+
+function l(input){
+  var output = Math.round(input * 1000000)/1000000;
+  return output;
+}
 
 /////////////////////////
 // GAME INITIALIZATION //
@@ -43,7 +51,7 @@ Game.Load = function(){
     Game.Buildings[this.id]=this;
   };
 
-  new Game.Building(0, 'Spambot','This bot will just spam you chat. What did you think?',1,0);
+  new Game.Building(0, 'Spambot','This bot will just spam your chat. What did you think?',1,0);
   new Game.Building(1, 'Moderator','Moderated chat is a blessing for every streamer, but too much cannot be good.',0,10);
 
   // Updates //
@@ -68,10 +76,10 @@ var vm = new Vue({
       
     },
     clickMoney: function(){
-      addMoney(0.01);
+      this.addMoney(0.01);
     },
     clickKappa: function(){
-      addEmotes(1);
+      this.addEmotes(1);
     },
     addMoney: function(amount){
       Game.money += amount;
