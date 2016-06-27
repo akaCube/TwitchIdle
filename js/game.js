@@ -56,7 +56,7 @@ Game.Load = function(){
     // calc functions //
 
     this.CalcCosts = function(){
-      this.moneyCost = Math.floor(this.baseMoneyPrice * Math.pow(1.1,this.count));
+      this.moneyCost = l(this.baseMoneyPrice * Math.pow(1.1,this.count), 2);
       this.emoteCost = Math.floor(this.baseEmotePrice * Math.pow(1.1,this.count));
     };
     this.CalcMoneyPerTick = function(){
@@ -118,7 +118,7 @@ Game.Load = function(){
     this.Trigger = trigger;
     this.count = count;
     this.CalcCosts = function(){
-      this.moneyCost = Math.floor(this.baseMoneyPrice * Math.pow(1.1,this.count));
+      this.moneyCost = l(this.baseMoneyPrice * Math.pow(1.1,this.count), 2);
       this.emoteCost = Math.floor(this.baseEmotePrice * Math.pow(1.1,this.count));
     };
     this.CalcCosts();
