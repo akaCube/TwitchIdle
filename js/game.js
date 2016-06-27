@@ -26,7 +26,7 @@ Game.Load = function(){
   Game.emotes = 0;
   Game.followers = 0;
   Game.viewersRatio = 0.05;
-
+  Game.viewers = 1;
   // Buildings //
 
   Game.Buildings=[];
@@ -73,11 +73,10 @@ Game.Load = function(){
   Game.AddEmote = function(amount){
     Game.emotes += amount
   }
-
-  Game.CalcViewer = function(){
-    var viewer = Game.followers * Game.viewersRatio;
+  Game.CalcViewers = function(){
+    var viewers = Game.followers * Game.viewersRatio;
     var deviation = 0.9 + Math.random() / 5;
-    viewer = Math.round(viewer * deviation + 1);
+    Game.viewers = Math.round(viewers * deviation + 1);
   }
 
 }
