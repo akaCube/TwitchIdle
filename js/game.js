@@ -14,24 +14,31 @@ function semiround(input, place){
 
 var Game = {};
 
+Game.calcViewer = function(){
+  var viewer = followers * viewersRatio;
+  var deviation = 0.9 + Math.random() / 5;
+  viewer *= deviation;
+  viewer++;
+}
+
 Game.Load = function(){
-  Game.version='0.0.2';
-  Game.changeLog=
+  Game.version = '0.0.2';
+  Game.changeLog =
   '<p><h2>0.0.2 Alpha</h2><br>First "building" is added! Get the gathering going!<br>Game Loop is in place<br>Seconds Counter added</p>'+
   '<p><h2>0.0.1 Alpha</h2><br>Yay! Game is launched! Only local development tho... :(<br>Main currency added</p>';
 
   // Variables //
 
-  Game.money=0;
-  Game.emotes=0;
-  Game.followers=0;
-  Game.viewersRatio=0.05;
+  Game.money = 0;
+  Game.emotes = 0;
+  Game.followers = 0;
+  Game.viewersRatio = 0.05;
 
   // Buildings //
 
   Game.Buildings=[];
 
-  Game.Building=function(id, name, description, baseMoneyPrice, baseEmotePrice, count=0){
+  Game.Building = function(id, name, description, baseMoneyPrice, baseEmotePrice, count=0){
     this.id = id;
     this.name = name;
     this.description = description;
@@ -52,8 +59,8 @@ Game.Load = function(){
     Game.Buildings[this.id]=this;
   };
 
-  new Game.Building(0, 'Spambot','This bot will just spam your chat. What did you think?',1,0);
-  new Game.Building(1, 'Moderator','Moderated chat is a blessing for every streamer, but too much cannot be good.',0,10);
+  new Game.Building(0, 'Spambot', 'This bot will just spam your chat. What did you expect?',1,0);
+  new Game.Building(1, 'Moderator', 'Moderated chat is a blessing for every streamer, but too much cannot be good.',0,10);
 
   // Updates //
 
@@ -89,12 +96,12 @@ var vm = new Vue({
       Game.emotes += amount;
     },
     buyCursor: function(){
-      var viewerCost = Math.floor(1 * Math.pow(1.1,Game.viewers));
+      var viewerCost = Math.floor(1 * Math.pow(1.1, Game.viewers));
       if(Game.money >= viewerCost){
         Game.viewers++;
-        Game.money-=viewerCost;
+        Game.money -= viewerCost;
       }
-      Game.viewerDisplayCost = Math.floor(1 * Math.pow(1.1,Game.viewers));
+      Game.viewerDisplayCost = Math.floor(1 * Math.pow(1.1, Game.viewers));
     }
   }
 });
