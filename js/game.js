@@ -99,14 +99,6 @@ var vm = new Vue({
   methods:{
     cycle: function(){
       
-    },
-    buyCursor: function(){
-      var viewerCost = Math.floor(1 * Math.pow(1.1, Game.viewers));
-      if(Game.money >= viewerCost){
-        Game.viewers++;
-        Game.money -= viewerCost;
-      }
-      Game.viewerDisplayCost = Math.floor(1 * Math.pow(1.1, Game.viewers));
     }
   }
 });
