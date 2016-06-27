@@ -29,34 +29,78 @@ Game.Load = function(){
     Game.followers = 0;
     Game.viewersRatio = 0.05;
     Game.viewers = 1;
+    Game.moneyPerTick = 0;
+    Game.emotesPerTick = 0;
+    Game.moneyEfficiency = 1;
+    Game.emoteEfficiency = 1;
 
   // Buildings //
 
   Game.Buildings = [];
 
-  Game.Building = function(id, name, description, baseMoneyPrice, baseEmotePrice, count = 0){
+  Game.Building = function(id, name, description, baseMoneyPrice, baseEmotePrice, baseMoneyPerTick, baseEmotesPerTick, count = 0, moneyEfficiency = 1, emoteEfficiency = 1){
+
+    // basic values //
+
     this.id = id;
     this.name = name;
     this.description = description;
     this.baseMoneyPrice = baseMoneyPrice;
     this.baseEmotePrice = baseEmotePrice;
-    this.moneyCost = baseMoneyPrice;
-    this.emoteCost = baseEmotePrice;
+    this.baseMoneyPerTick = baseMoneyPerTick;
+    this.baseEmotesPerTick = baseEmotesPerTick;
     this.count = count;
+    this.moneyEfficiency = moneyEfficiency;
+    this.emoteEfficiency = emoteEfficiency;
+
+    // calc functions //
+
+    this.CalcCosts = function(){
+      this.moneyCost = Math.floor(this.baseMoneyPrice * Math.pow(1.1,this.count));
+      this.emoteCost = Math.floor(this.baseEmotePrice * Math.pow(1.1,this.count));
+    };
+    this.CalcMoneyPerTick = function(){
+      this.moneyPerTick = this.baseMoneyPerTick * this.count * this.moneyEfficiency;
+    }
+    this.CalcEmotesPerTick = function(){
+      this.emotesPerTick = this.baseEmotesPerTick * this.count * this.emoteEfficiency;
+    }
+    this.CalcCosts();
+    this.CalcMoneyPerTick();
+    this.CalcEmotesPerTick();
+
+    // other functions //
+
+    this.IncMoneyEfficiency = function(value){
+      this.moneyEfficiency *= value;
+      this.CalcMoneyPerTick();
+      Game.CalcMoneyPerTick();
+    }
+    this.IncEmoteEfficiency = function(value){
+      this.emoteEfficiency *= value;
+      this.CalcEmotesPerTick();
+      Game.CalcEmotesPerTick();
+    }
+
     this.Buy = function(){
       if(Game.money >= this.moneyCost && Game.emotes >= this.emoteCost){
         this.count++;
-        Game.money -= this.moneyCost;
-        Game.emotes -= this.emoteCost;
-        this.moneyCost = Math.floor(this.baseMoneyPrice * Math.pow(1.1,this.count));
-        this.emoteCost = Math.floor(this.baseEmotePrice * Math.pow(1.1,this.count));
+        Game.AddMoney(-this.moneyCost);
+        Game.AddEmote(-this.emoteCost);
+        this.CalcCosts();
+        this.CalcMoneyPerTick();
+        this.CalcEmotesPerTick();
+        Game.CalcMoneyPerTick();
+        Game.CalcEmotesPerTick();
       }
     };
+
+    // add to array //
     Game.Buildings[this.id] = this;
   };
 
-  new Game.Building(0, 'Spambot', 'This bot will just spam your chat. What did you expect?',1,0);
-  new Game.Building(1, 'Moderator', 'Moderated chat is a blessing for every streamer, but too much cannot be good.',0,10);
+  new Game.Building(0, 'Spambot', 'This bot will just spam your chat. What did you expect?',1, 0, 0, 1);
+  new Game.Building(1, 'Moderator', 'Moderated chat is a blessing for every streamer, but too much cannot be good.',0 ,10, 0.01, 0);
 
   // Upgrades //
   
@@ -71,17 +115,19 @@ Game.Load = function(){
     this.description = description;
     this.baseMoneyPrice = baseMoneyPrice;
     this.baseEmotePrice = baseEmotePrice;
-    this.moneyCost = baseMoneyPrice;
-    this.emoteCost = baseEmotePrice;
     this.Trigger = trigger;
     this.count = count;
+    this.CalcCosts = function(){
+      this.moneyCost = Math.floor(this.baseMoneyPrice * Math.pow(1.1,this.count));
+      this.emoteCost = Math.floor(this.baseEmotePrice * Math.pow(1.1,this.count));
+    };
+    this.CalcCosts();
     this.Buy = function(){
       if(Game.money >= this.moneyCost && Game.emotes >= this.emoteCost){
         this.count++;
-        Game.money -= this.moneyCost;
-        Game.emotes -= this.emoteCost;
-        this.moneyCost = Math.floor(this.baseMoneyPrice * Math.pow(1.1,this.count));
-        this.emoteCost = Math.floor(this.baseEmotePrice * Math.pow(1.1,this.count));
+        Game.AddMoney(-this.moneyCost);
+        Game.AddEmote(-this.emoteCost);
+        this.CalcCosts();
       }
     };
     Game.Actions[this.id] = this;
@@ -90,7 +136,7 @@ Game.Load = function(){
   new Game.Action(0, 'Reddit Post', 'A post about your stream on reddit.', 0, 10, function(){
     Game.followers += Math.round(Math.random()) + 1;
   });
-  new Game.Action(1, 'Key-Giveaway', 'A Key-Giveaway during your stream', 5, 0, function(){
+  new Game.Action(1, 'Key-Giveaway', 'A Key-Giveaway during your stream.', 5, 0, function(){
     Game.followers += Math.round(Math.random() * 2) + 1;
   });
 
@@ -110,11 +156,28 @@ Game.Load = function(){
     Game.AddEmote = function(amount){
       Game.emotes += amount
     }
+    Game.CalcMoneyPerTick = function(){
+      var moneyPerTick = 0;
+      Game.Buildings.forEach(function(building){
+        moneyPerTick += building.moneyPerTick;
+      });
+      Game.moneyPerTick = moneyPerTick * Game.moneyEfficiency;
+    }
+    Game.CalcEmotesPerTick = function(){
+      var emotesPerTick = 0;
+      Game.Buildings.forEach(function(building){
+        emotesPerTick += building.emotesPerTick;
+      });
+      Game.emotesPerTick = emotesPerTick * Game.emoteEfficiency;
+    }
     Game.CalcViewers = function(){
       var viewers = Game.followers * Game.viewersRatio;
       var deviation = 0.9 + Math.random() / 5;
       Game.viewers = Math.round(viewers * deviation + 1);
     }
+
+    Game.CalcMoneyPerTick();
+    Game.CalcEmotesPerTick();
 }
 
 Game.Load();
@@ -130,7 +193,8 @@ var vm = new Vue({
   },
   methods:{
     cycle: function(){
-      
+      Game.AddMoney(Game.moneyPerTick);
+      Game.AddEmote(Game.emotesPerTick);
     }
   }
 });
