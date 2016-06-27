@@ -79,6 +79,7 @@ Game.Load = function(){
   var deviation = 0.9 + Math.random() / 5;
   viewer *= deviation;
   viewer++;
+  viewer = Math.round(viewer);
   return viewer;
 }
 
