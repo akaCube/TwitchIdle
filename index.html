@@ -16,8 +16,9 @@
     <h1>Welcome to TwitchIdle 0.0.2 Alpha!</h1>
 
     <div id="game">
-      <h1>Your clicks: {{ Game.money }}</h1>
-      <button @click="Game.money++">Click!</button>
+      <h1>Your money: {{ Game.money }}</h1><h1>Your kappas: {{ Game.emotes }}</h1>
+      <button @click="Game.money += 0.01">Click!</button>
+      <button @click="Game.Emotes++">Click!</button>
       <h2>Cursors: {{ Game.viewers }}</h2>
       <button @click="buyCursor">Buy Cursor! ({{ Game.viewerDisplayCost}})</button>
 

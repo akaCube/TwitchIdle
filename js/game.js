@@ -43,15 +43,15 @@ var vm = new Vue({
   },
   methods:{
     cycle: function(){
-      this.Game.money+=this.Game.viewers*0.01;
+      Game.money+=Game.viewers*0.01;
     },
     buyCursor: function(){
-      var viewerCost = Math.floor(10 * Math.pow(1.1,this.Game.viewers));
-      if(this.Game.money >= viewerCost){
-        this.Game.viewers++;
-        this.Game.money-=viewerCost;
+      var viewerCost = Math.floor(10 * Math.pow(1.1,Game.viewers));
+      if(Game.money >= viewerCost){
+        Game.viewers++;
+        Game.money-=viewerCost;
       }
-      this.Game.viewerDisplayCost = Math.floor(10 * Math.pow(1.1,this.Game.viewers));
+      Game.viewerDisplayCost = Math.floor(10 * Math.pow(1.1,Game.viewers));
     }
   }
 });
