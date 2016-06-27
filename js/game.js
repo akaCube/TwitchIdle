@@ -32,9 +32,9 @@ Game.Load = function(){
 
   // Buildings //
 
-  Game.Buildings=[];
+  Game.Buildings = [];
 
-  Game.Building = function(id, name, description, baseMoneyPrice, baseEmotePrice, count=0){
+  Game.Building = function(id, name, description, baseMoneyPrice, baseEmotePrice, count = 0){
     this.id = id;
     this.name = name;
     this.description = description;
@@ -52,17 +52,47 @@ Game.Load = function(){
         this.emoteCost = Math.floor(this.baseEmotePrice * Math.pow(1.1,this.count));
       }
     };
-    Game.Buildings[this.id]=this;
+    Game.Buildings[this.id] = this;
   };
 
   new Game.Building(0, 'Spambot', 'This bot will just spam your chat. What did you expect?',1,0);
   new Game.Building(1, 'Moderator', 'Moderated chat is a blessing for every streamer, but too much cannot be good.',0,10);
 
+  // Upgrades //
   
 
-  // Updates //
-
   // Actions //
+
+  Game.Actions = [];
+
+  Game.Action = function(id, name, description, baseMoneyPrice, baseEmotePrice, trigger, count = 0){
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.baseMoneyPrice = baseMoneyPrice;
+    this.baseEmotePrice = baseEmotePrice;
+    this.moneyCost = baseMoneyPrice;
+    this.emoteCost = baseEmotePrice;
+    this.Trigger = trigger;
+    this.count = count;
+    this.Buy = function(){
+      if(Game.money >= this.moneyCost && Game.emotes >= this.emoteCost){
+        this.count++;
+        Game.money -= this.moneyCost;
+        Game.emotes -= this.emoteCost;
+        this.moneyCost = Math.floor(this.baseMoneyPrice * Math.pow(1.1,this.count));
+        this.emoteCost = Math.floor(this.baseEmotePrice * Math.pow(1.1,this.count));
+      }
+    };
+    Game.Actions[this.id] = this;
+  };
+
+  new Game.Action(0, 'Reddit Post', 'A post about your stream on reddit.', 0, 10, function(){
+    Game.followers += Math.round(Math.random()) + 1;
+  });
+  new Game.Action(1, 'Key-Giveaway', 'A Key-Giveaway during your stream', 5, 0, function(){
+    Game.followers += Math.round(Math.random() * 2) + 1;
+  });
 
   // Functions //
 
