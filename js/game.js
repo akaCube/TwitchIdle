@@ -2,8 +2,9 @@
 // HELP FUNCTIONS //
 ////////////////////
 
-function l(input){
-  var output = Math.round(input * 1000000)/1000000;
+function semiround(input, place){
+  var placer = Math.pow(10, place);
+  var output = Math.round(input * placer)/placer;
   return output;
 }
 
@@ -82,7 +83,7 @@ var vm = new Vue({
       this.addEmotes(1);
     },
     addMoney: function(amount){
-      Game.money = Math.round((Game.money + amount) * 100) / 100;
+      Game.money = semiround(Game.money + amount, 2);
     },
     addEmotes: function(amount){
       Game.emotes += amount;
