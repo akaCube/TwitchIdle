@@ -43,8 +43,8 @@ Game.Load = function(){
     Game.Buildings[this.id]=this;
   };
 
-  new Game.Building('Spambot','This bot will just spam you chat. What did you think?',1,0)
-  new Game.Building('Moderator','Moderated chat is a Bless for every streamer, but too much can not be good',0,10)
+  new Game.Building(0, 'Spambot','This bot will just spam you chat. What did you think?',1,0);
+  new Game.Building(1, 'Moderator','Moderated chat is a blessing for every streamer, but too much cannot be good.',0,10);
 
   // Updates //
 
@@ -65,7 +65,19 @@ var vm = new Vue({
   },
   methods:{
     cycle: function(){
-      Game.money+=Game.viewers*0.01;
+      
+    },
+    clickMoney: function(){
+      addMoney(0.01);
+    },
+    clickKappa: function(){
+      addEmotes(1);
+    },
+    addMoney: function(amount){
+      Game.money += amount;
+    },
+    addEmotes: function(amount){
+      Game.emotes += amount;
     },
     buyCursor: function(){
       var viewerCost = Math.floor(1 * Math.pow(1.1,Game.viewers));

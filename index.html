@@ -17,8 +17,8 @@
 
     <div id="game">
       <h1>Your money: {{ Game.money }}</h1><h1>Your kappas: {{ Game.emotes }}</h1>
-      <button @click="Game.money += 0.01">Click!</button>
-      <button @click="Game.emotes++">Click!</button>
+      <button @click="clickMoney">Click!</button>
+      <button @click="clickKappa">Click!</button>
       <h2>Cursors: {{ Game.viewers }}</h2>
       <button @click="buyCursor">Buy Cursor! ({{ Game.viewerDisplayCost}})</button>
 
