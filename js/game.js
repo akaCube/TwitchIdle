@@ -2,7 +2,7 @@
 // HELP FUNCTIONS //
 ////////////////////
 
-function semiround(input, place){
+function l(input, place){
   var placer = Math.pow(10, place);
   var output = Math.round(input * placer)/placer;
   return output;
@@ -13,13 +13,6 @@ function semiround(input, place){
 /////////////////////////
 
 var Game = {};
-
-Game.calcViewer = function(){
-  var viewer = followers * viewersRatio;
-  var deviation = 0.9 + Math.random() / 5;
-  viewer *= deviation;
-  viewer++;
-}
 
 Game.Load = function(){
   Game.version = '0.0.2';
@@ -66,6 +59,29 @@ Game.Load = function(){
 
   // Actions //
 
+  // Functions //
+
+  Game.ClickMoney = function(){
+    Game.AddMoney(0.01);
+  };
+  Game.ClickEmote = function(){
+    Game.AddEmote(1);
+  };
+  Game.AddMoney = function(amount){
+    Game.money = l(Game.money + amount, 2);
+  }
+  Game.AddEmote = function(amount){
+    Game.emotes += amount
+  }
+
+  Game.calcViewer = function(){
+  var viewer = followers * viewersRatio;
+  var deviation = 0.9 + Math.random() / 5;
+  viewer *= deviation;
+  viewer++;
+  return viewer;
+}
+
 }
 
 Game.Load();
@@ -82,18 +98,6 @@ var vm = new Vue({
   methods:{
     cycle: function(){
       
-    },
-    clickMoney: function(){
-      this.addMoney(0.01);
-    },
-    clickKappa: function(){
-      this.addEmotes(1);
-    },
-    addMoney: function(amount){
-      Game.money = semiround(Game.money + amount, 2);
-    },
-    addEmotes: function(amount){
-      Game.emotes += amount;
     },
     buyCursor: function(){
       var viewerCost = Math.floor(1 * Math.pow(1.1, Game.viewers));
