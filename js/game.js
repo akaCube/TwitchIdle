@@ -21,12 +21,17 @@ Game.Load = function(){
   // Buildings //
 
   Game.viewers=0;
-  Game.viewerCost=10;
-  Game.viewerDisplayCost=10;
+  Game.viewerCost=1;
+  Game.viewerDisplayCost=1;
 
   // Updates //
 
   // Actions //
+
+  Game.Actions = [
+  	{tag: 'redditPost', name: 'Reddit Post', initialCost: 10, timesUsed: 0},
+  	{tag: 'keyGiveaway', name: 'Key Giveaway', initialCost: 20, timesUsed: 0}
+  ];
 
 }
 
@@ -46,12 +51,12 @@ var vm = new Vue({
       Game.money+=Game.viewers*0.01;
     },
     buyCursor: function(){
-      var viewerCost = Math.floor(10 * Math.pow(1.1,Game.viewers));
+      var viewerCost = Math.floor(1 * Math.pow(1.1,Game.viewers));
       if(Game.money >= viewerCost){
         Game.viewers++;
         Game.money-=viewerCost;
       }
-      Game.viewerDisplayCost = Math.floor(10 * Math.pow(1.1,Game.viewers));
+      Game.viewerDisplayCost = Math.floor(1 * Math.pow(1.1,Game.viewers));
     }
   }
 });
