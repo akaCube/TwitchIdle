@@ -23,10 +23,14 @@
 
       <div id="buildings">
         <div v-for="building in Game.Buildings">
-          <h1>Your {{{ building.name }}} count: {{{ building.count }}}</h1><br><button @click="building.Buy()">Buy one {{{ building.name }}} ({{{ building.moneyCost }}} money and {{{ building.emoteCost }}} emotes)</button><br>
+          <h1>Your {{{ building.name }}} count: {{{ building.count }}}</h1><h3>{{{ building.description }}}</h3><br><button @click="building.Buy()">Buy one {{{ building.name }}} ({{{ building.moneyCost }}} money and {{{ building.emoteCost }}} emotes)</button><br>
         </div>
       </div>
-
+      <div id="actions">
+        <div v-for="action in Game.Actions">
+        <h1>Make a {{{ action.name }}}</h1><button @click="action.Buy()">Make a {{{ action.name }}} ({{{ action.moneyCost }}} money and {{{ action.emoteCost }}} emotes)</button><br>
+        </div>
+      </div>
 
 
       <div style="margin-top: 100px;">

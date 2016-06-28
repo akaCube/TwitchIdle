@@ -27,7 +27,7 @@ Game.Load = function(){
 
     Game.money = 0;
     Game.emotes = 0;
-    Game.followers = 10000;
+    Game.followers = 0;
     Game.viewersRatio = 0.05;
     Game.viewers = 1;
     Game.moneyPerTick = 0;
@@ -121,6 +121,8 @@ Game.Load = function(){
     this.description = description;
     this.baseMoneyPrice = baseMoneyPrice;
     this.baseEmotePrice = baseEmotePrice;
+    this.moneyCost = baseMoneyPrice;
+    this.emoteCost = baseEmotePrice;
     this.Trigger = trigger;
     this.count = count;
     this.CalcCosts = function(){
@@ -134,6 +136,7 @@ Game.Load = function(){
         Game.AddMoney(-this.moneyCost);
         Game.AddEmote(-this.emoteCost);
         this.CalcCosts();
+        trigger();                                //unschoen! (glaube ich) :)
       }
     };
     Game.Actions[this.id] = this;
@@ -162,6 +165,9 @@ Game.Load = function(){
     Game.AddEmote = function(amount){
       Game.emotes += amount
     }
+
+    // MPT / EPT //
+
     Game.CalcMoneyPerTick = function(){
       var moneyPerTick = 0;
       Game.Buildings.forEach(function(building){
@@ -176,6 +182,9 @@ Game.Load = function(){
       });
       Game.emotesPerTick = emotesPerTick * Game.emoteEfficiency;
     }
+
+    // Viewer Calculation //
+
     Game.CalcViewers = function(){
       var viewers = Game.followers * Game.viewersRatio;
       var deviation = 0.9 + Math.random() / 5;
