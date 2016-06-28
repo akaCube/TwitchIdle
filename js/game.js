@@ -15,8 +15,9 @@ function l(input, place){
 var Game = {};
 
 Game.Load = function(){
-  Game.version = '0.0.2';
+  Game.version = '0.0.3';
   Game.changeLog =
+  '<p><h2>0.0.3 Alpha</h2><br><p>Complete rework of the structure.<br>Added an additional currency and 2 stable variables: followers and viewers.<br>New "Buildings" moderator and spambot added.</p>'+
   '<p><h2>0.0.2 Alpha</h2><br>First "building" is added! Get the gathering going!<br>Game Loop is in place<br>Seconds Counter added</p>'+
   '<p><h2>0.0.1 Alpha</h2><br>Yay! Game is launched! Only local development tho... :(<br>Main currency added</p>';
 
@@ -26,13 +27,18 @@ Game.Load = function(){
 
     Game.money = 0;
     Game.emotes = 0;
-    Game.followers = 0;
+    Game.followers = 10000;
     Game.viewersRatio = 0.05;
     Game.viewers = 1;
     Game.moneyPerTick = 0;
     Game.emotesPerTick = 0;
     Game.moneyEfficiency = 1;
     Game.emoteEfficiency = 1;
+
+    // Timestamps //
+
+    Game.lastViewerCount = 0;
+    Game.lastGameSave = 0;
 
   // Buildings //
 
@@ -136,7 +142,7 @@ Game.Load = function(){
   new Game.Action(0, 'Reddit Post', 'A post about your stream on reddit.', 0, 10, function(){
     Game.followers += Math.round(Math.random()) + 1;
   });
-  new Game.Action(1, 'Key-Giveaway', 'A Key-Giveaway during your stream.', 5, 0, function(){
+  new Game.Action(1, 'Giveaway', 'A Giveaway during your stream.', 5, 0, function(){
     Game.followers += Math.round(Math.random() * 2) + 1;
   });
 
@@ -176,11 +182,51 @@ Game.Load = function(){
       Game.viewers = Math.round(viewers * deviation + 1);
     }
 
-    Game.CalcMoneyPerTick();
-    Game.CalcEmotesPerTick();
+
+    ////////////////
+    // Game Start //
+    ////////////////
+
+    Game.Start=function(){
+      Game.CalcMoneyPerTick();
+      Game.CalcEmotesPerTick();
+    }
+
+    /////////////////////
+    // Game Main Cycle //
+    /////////////////////
+
+    Game.Cycle=function(){
+      Game.AddMoney(Game.moneyPerTick);
+      Game.AddEmote(Game.emotesPerTick);
+
+      var now = Date.now();
+      if(Game.lastViewerCount + 20000 <= now){
+        Game.CalcViewers();
+        Game.lastViewerCount = now;
+      }
+
+    }
+
+    return true;
 }
 
-Game.Load();
+
+
+
+////////////////
+// GAME START //
+////////////////
+
+
+if(Game.Load()){
+  Game.Start();
+  window.setInterval(function(){
+    Game.Cycle();
+  }, 1000);
+}
+
+
 
 ////////////////
 // VUE OBJECT //
@@ -190,21 +236,5 @@ var vm = new Vue({
   el: '#game',
   data: {
     Game: Game
-  },
-  methods:{
-    cycle: function(){
-      Game.AddMoney(Game.moneyPerTick);
-      Game.AddEmote(Game.emotesPerTick);
-    }
   }
 });
-
-
-
-///////////////
-// GAME START //
-///////////////
-
-window.setInterval(function(){
-  vm.cycle();
-}, 1000);

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TwitchIdle 0.0.2 Alpha</title>
+    <title>TwitchIdle Alpha</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link src="js/vue.min.js">
@@ -13,10 +13,11 @@
   <body>
     <script src="js/vue.js"></script>
 
-    <h1>Welcome to TwitchIdle 0.0.2 Alpha!</h1>
+    
 
     <div id="game">
-      <h1>Your money: {{ Game.money }} Your kappas: {{ Game.emotes }}</h1>
+      <h1>Welcome to TwitchIdle {{{ Game.version }}} Alpha!</h1>
+      <h1>Your money: {{ Game.money }} Your kappas: {{ Game.emotes }} Followers: {{ Game.followers }} Viewers: {{ Game.viewers }}</h1>
       <button @click="Game.ClickMoney">Click!</button>
       <button @click="Game.ClickEmote">Click!</button><br>
 
