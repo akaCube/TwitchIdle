@@ -52,6 +52,10 @@ Game.Load = function(){
     Game.lastViewerCount = 0;
     Game.lastGameSave = 0;
 
+    // test
+
+    Game.test1 = 0;
+
   // Buildings //
 
   Game.Buildings = [];
@@ -199,12 +203,20 @@ Game.Load = function(){
 
     Game.CalcViewers = function(){
       var viewers = Game.followers * Game.viewersRatio;
+      // +/- 10%
       var deviation = 0.9 + Math.random() / 5;
       Game.viewers = Math.round(viewers * deviation + 1);
+      // mods moderate 40 to 50 viewers
       Game.moderatedViewers = Math.min(Game.viewers, RInt(Game.Buildings[1].count * 40, Game.Buildings[1].count * 50));
       Game.wildViewers = Game.viewers - Game.moderatedViewers;
       Game.viewersEmotesPerTick = Math.round(Game.moderatedViewers * 0.1 + Game.wildViewers * 0.3);
       Game.viewersMoneyPerTick = l(Game.moderatedViewers * 0.001, 2);
+
+      // testing
+      // 5% of the moderated viewers are added as new followers on recalc
+      // -0.1% per 10 viewers, but not lower than 0.5%
+      // this means the first follower is added at 11 moderated viewers
+      Game.followers += Math.round(Game.moderatedViewers * Math.max(0.005, 0.05 - 0.0001 * Game.viewers));
     }
 
 
@@ -226,7 +238,7 @@ Game.Load = function(){
       Game.AddEmote(Game.emotesPerTick + Game.viewersEmotesPerTick);
 
       var now = Date.now();
-      if(Game.lastViewerCount + 20000 <= now){
+      if(Game.lastViewerCount + 5000 <= now){
         Game.CalcViewers();
         Game.lastViewerCount = now;
       }
