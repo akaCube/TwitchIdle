@@ -4,8 +4,13 @@
 
 function l(input, place){
   var placer = Math.pow(10, place);
-  var output = Math.round(input * placer)/placer;
+  var output = Math.round(input * placer) / placer;
   return output;
+}
+
+function RInt(min, max){
+  //calculates a random int between min and max
+  return min + Math.floor(Math.random() * (max - min + 1));
 }
 
 /////////////////////////
@@ -28,12 +33,19 @@ Game.Load = function(){
     Game.money = 0;
     Game.emotes = 0;
     Game.followers = 0;
-    Game.viewersRatio = 0.05;
     Game.viewers = 1;
+
+    // for the math //
+
+    Game.viewersRatio = 0.05;
     Game.moneyPerTick = 0;
     Game.emotesPerTick = 0;
     Game.moneyEfficiency = 1;
     Game.emoteEfficiency = 1;
+    Game.moderatedViewers = 0;
+    Game.wildViewers = 1;
+    Game.viewersMoneyPerTick = 0;
+    Game.viewersEmotesPerTick = 0;
 
     // Timestamps //
 
@@ -106,7 +118,7 @@ Game.Load = function(){
   };
 
   new Game.Building(0, 'Spambot', 'This bot will just spam your chat. What did you expect?',1, 0, 0, 1);
-  new Game.Building(1, 'Moderator', 'Moderated chat is a blessing for every streamer, but too much cannot be good.',0 ,10, 0.01, 0);
+  new Game.Building(1, 'Moderator', 'Moderated chat is a blessing for every streamer, but too much cannot be good.',0 ,10, 0, 0);
 
   // Upgrades //
   
@@ -143,10 +155,10 @@ Game.Load = function(){
   };
 
   new Game.Action(0, 'Reddit Post', 'A post about your stream on reddit.', 0, 10, function(){
-    Game.followers += Math.round(Math.random()) + 1;
+    Game.followers += RInt(10, 20);
   });
   new Game.Action(1, 'Giveaway', 'A Giveaway during your stream.', 5, 0, function(){
-    Game.followers += Math.round(Math.random() * 2) + 1;
+    Game.followers += Rint(20, 30);
   });
 
   // Functions //
@@ -189,6 +201,10 @@ Game.Load = function(){
       var viewers = Game.followers * Game.viewersRatio;
       var deviation = 0.9 + Math.random() / 5;
       Game.viewers = Math.round(viewers * deviation + 1);
+      Game.moderatedViewers = Math.min(Game.viewers, RInt(Game.Buildings[1].count * 40, Game.Buildings[1].count * 50));
+      Game.wildViewers = Game.viewers - Game.moderatedViewers;
+      Game.viewersEmotesPerTick = Math.round(Game.moderatedViewers * 0.1 + Game.wildViewers * 0.3);
+      Game.viewersMoneyPerTick = l(Game.moderatedViewers * 0.001, 2);
     }
 
 
@@ -206,8 +222,8 @@ Game.Load = function(){
     /////////////////////
 
     Game.Cycle=function(){
-      Game.AddMoney(Game.moneyPerTick);
-      Game.AddEmote(Game.emotesPerTick);
+      Game.AddMoney(Game.moneyPerTick + Game.viewersMoneyPerTick);
+      Game.AddEmote(Game.emotesPerTick + Game.viewersEmotesPerTick);
 
       var now = Date.now();
       if(Game.lastViewerCount + 20000 <= now){
