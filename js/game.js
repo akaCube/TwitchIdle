@@ -13,6 +13,11 @@ function RInt(min, max){
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
+function IsIn(input){
+  //given a propability, returns that likely true
+  return input >= Math.random();
+}
+
 /////////////////////////
 // GAME INITIALIZATION //
 /////////////////////////
@@ -37,7 +42,8 @@ Game.Load = function(){
 
     // for the math //
 
-    Game.viewersRatio = 0.05;
+    //realistic would be 0.05, but for testing we start with 0.25
+    Game.viewersRatio = 0.25;
     Game.moneyPerTick = 0;
     Game.emotesPerTick = 0;
     Game.moneyEfficiency = 1;
@@ -209,14 +215,16 @@ Game.Load = function(){
       // mods moderate 40 to 50 viewers
       Game.moderatedViewers = Math.min(Game.viewers, RInt(Game.Buildings[1].count * 40, Game.Buildings[1].count * 50));
       Game.wildViewers = Game.viewers - Game.moderatedViewers;
-      Game.viewersEmotesPerTick = Math.round(Game.moderatedViewers * 0.1 + Game.wildViewers * 0.3);
+      Game.viewersEmotesPerTick = Math.round(Game.moderatedViewers * 0.1 + Game.wildViewers * 0.3) * Game.emoteEfficiency;
       Game.viewersMoneyPerTick = l(Game.moderatedViewers * 0.001, 2);
+    }
 
+    Game.AddFollowers = function(){
       // testing
-      // 5% of the moderated viewers are added as new followers on recalc
-      // -0.1% per 10 viewers, but not lower than 0.5%
-      // this means the first follower is added at 11 moderated viewers
-      Game.followers += Math.round(Game.moderatedViewers * Math.max(0.005, 0.05 - 0.0001 * Game.viewers));
+      // 10% of the moderated viewers are added as new followers on recalc
+      // -0.1% per 10 viewers, but not lower than 0.2%
+      // this means the first follower is added at 6 moderated viewers
+      Game.followers += Math.round(Game.moderatedViewers * Math.max(0.002, 0.1 - 0.0001 * Game.viewers));
     }
 
 
@@ -240,6 +248,8 @@ Game.Load = function(){
       var now = Date.now();
       if(Game.lastViewerCount + 5000 <= now){
         Game.CalcViewers();
+        if(IsIn(0.25))
+          Game.AddFollowers();
         Game.lastViewerCount = now;
       }
 
