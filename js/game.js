@@ -39,6 +39,7 @@ Game.Load = function(){
     Game.emotes = 0;
     Game.followers = 0;
     Game.viewers = 1;
+    Game.spamOMeter = 0;
 
     // for the math //
 
@@ -60,6 +61,7 @@ Game.Load = function(){
 
     // test
 
+    Game.eventLine = '';
     Game.test1 = 0;
 
   // Buildings //
@@ -185,7 +187,7 @@ Game.Load = function(){
       Game.money = l(Game.money + amount, 2);
     }
     Game.AddEmote = function(amount){
-      Game.emotes += amount
+      Game.emotes += amount;
     }
 
     // MPT / EPT //
@@ -212,11 +214,13 @@ Game.Load = function(){
       // +/- 10%
       var deviation = 0.9 + Math.random() / 5;
       Game.viewers = Math.round(viewers * deviation + 1);
-      // mods moderate 40 to 50 viewers
-      Game.moderatedViewers = Math.min(Game.viewers, RInt(Game.Buildings[1].count * 40, Game.Buildings[1].count * 50));
-      Game.wildViewers = Game.viewers - Game.moderatedViewers;
-      Game.viewersEmotesPerTick = Math.round(Game.moderatedViewers * 0.1 + Game.wildViewers * 0.3) * Game.emoteEfficiency;
-      Game.viewersMoneyPerTick = l(Game.moderatedViewers * 0.001, 2);
+      var lowSpamOMeter = Game.spamOMeter / 100;
+      //for every point the Spam-o-Meter is lower then 25 you get 1% less emotes by the viewers
+      var spamEmotePenalty = 1 + Math.min(0, lowSpamOMeter - 0.25);
+      //for every point the Spam-o-Meter is higher than 75 you get 1% less money by the viewers
+      var spamMoneyPenalty = 1 - Math.max(0, lowSpamOMeter - 0.75);
+      Game.viewersEmotesPerTick = Math.round(Game.viewers * 0.25 * Game.emoteEfficiency * spamEmotePenalty);
+      Game.viewersMoneyPerTick = l(Game.viewers * 0.001 * spamMoneyPenalty, 2);
     }
 
     Game.AddFollowers = function(){
@@ -224,7 +228,37 @@ Game.Load = function(){
       // 10% of the moderated viewers are added as new followers on recalc
       // -0.1% per 10 viewers, but not lower than 0.2%
       // this means the first follower is added at 6 moderated viewers
-      Game.followers += Math.round(Game.moderatedViewers * Math.max(0.002, 0.1 - 0.0001 * Game.viewers));
+      Game.followers += Math.round(Game.viewers * Math.max(0.002, 0.1 - 0.0001 * Game.viewers));
+    }
+
+    Game.CalcSpamOMeter = function(){
+      var mods = Game.Buildings[1].count;
+      //chance of mods being able to handle the viewers
+      //one mod can handle 40 to 50 viewers
+      //min 0.1, max 0.9
+      var canHandle = IsIn(Math.max(0.1, Math.min(RInt(mods * 40, mods * 50) / Game.viewers, 0.9)));
+
+      //increases by 2 per tick if above 70
+      if(Game.spamOMeter > 70)
+        Game.spamOMeter += 2;
+      //reduced by 1 per tick if below 30
+      else if(Game.spamOMeter < 30)
+        Game.spamOMeter--;
+      //if none of the two, can increase/decrease or stay
+      else
+        Game.spamOMeter += RInt(-3, 3);
+
+      if(Game.spamOMeter > 80 && canHandle){
+        Game.spamOMeter -= RInt(10, 20);
+        Game.eventLine += ' banhammer';
+      }
+      if(Game.spamOMeter < 20 && canHandle){
+        Game.spamOMeter += RInt(10, 20);
+        Game.eventLine += ' motivation';
+      }
+
+      Game.spamOMeter = Math.min(100, Math.max(0, Game.spamOMeter));
+
     }
 
 
@@ -242,8 +276,10 @@ Game.Load = function(){
     /////////////////////
 
     Game.Cycle=function(){
+      Game.eventLine = '';
       Game.AddMoney(Game.moneyPerTick + Game.viewersMoneyPerTick);
       Game.AddEmote(Game.emotesPerTick + Game.viewersEmotesPerTick);
+      Game.CalcSpamOMeter();
 
       var now = Date.now();
       if(Game.lastViewerCount + 5000 <= now){

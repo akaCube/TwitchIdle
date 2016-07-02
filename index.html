@@ -17,9 +17,11 @@
 
     <div id="game">
       <h1>Welcome to TwitchIdle {{{ Game.version }}} Alpha!</h1>
-      <h1>Your money: {{ Game.money }} Your kappas: {{ Game.emotes }} Followers: {{ Game.followers }} Viewers: {{ Game.viewers }}</h1>
+      <h1>Your money: {{ Game.money }} Your kappas: {{ Game.emotes }} Followers: {{ Game.followers }} Viewers: {{ Game.viewers }} Spam-O-Meter: {{ Game.spamOMeter }}</h1>
       <button @click="Game.ClickMoney">Click!</button>
       <button @click="Game.ClickEmote">Click!</button><br>
+
+      <h1>Eventline:{{ Game.eventLine }}</h1>
 
       <div id="buildings">
         <div v-for="building in Game.Buildings">
